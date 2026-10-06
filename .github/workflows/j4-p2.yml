@@ -21,11 +21,11 @@ jobs:
       - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.2'
+          php-version: '7.4'
           extensions: mbstring, pdo_mysql
-          tools: composer:1
+          tools: composer:2.2
           coverage: none
-      - run: composer install --no-interaction --prefer-dist --no-progress
+      - run: composer update --no-interaction --prefer-dist --no-progress
       - name: Test environment
         run: |
           cp .env.travis .env
@@ -45,6 +45,7 @@ jobs:
         with:
           name: evidence
           path: |
+            composer.lock
             surface.actual.json
             project-tests.*
             boot.log

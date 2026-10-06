@@ -51,7 +51,7 @@ class Slug
      */
     public function generate()
     {
-        $slug = str_slug($this->initialValue, static::SEPARATOR);
+        $slug = \Illuminate\Support\Str::slug($this->initialValue, static::SEPARATOR);
 
         $notAllowed = $this->getSimilarSlugs($slug)->merge($this->banned);
 

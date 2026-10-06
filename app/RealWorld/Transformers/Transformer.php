@@ -23,7 +23,7 @@ abstract class Transformer
     public function collection(Collection $data)
     {
         return [
-            str_plural($this->resourceName) => $data->map([$this, 'transform'])
+            \Illuminate\Support\Str::plural($this->resourceName) => $data->map([$this, 'transform'])
         ];
     }
 
@@ -48,9 +48,9 @@ abstract class Transformer
      */
     public function paginate(Paginate $paginated)
     {
-        $resourceName = str_plural($this->resourceName);
+        $resourceName = \Illuminate\Support\Str::plural($this->resourceName);
 
-        $countName = str_plural($this->resourceName) . 'Count';
+        $countName = \Illuminate\Support\Str::plural($this->resourceName) . 'Count';
 
         $data = [
             $resourceName => $paginated->getData()->map([$this, 'transform'])

@@ -11,7 +11,7 @@ class ArticleFavoriteTest extends TestCase
 
     protected $article;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
