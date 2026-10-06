@@ -25,7 +25,7 @@ jobs:
           extensions: mbstring, pdo_mysql
           tools: composer:2.2
           coverage: none
-      - run: composer update --no-interaction --prefer-dist --no-progress
+      - run: composer install --no-interaction --prefer-dist --no-progress
       - name: Test environment
         run: |
           cp .env.travis .env

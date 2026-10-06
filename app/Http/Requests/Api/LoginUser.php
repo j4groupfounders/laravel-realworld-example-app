@@ -9,7 +9,7 @@ class LoginUser extends ApiRequest
      *
      * @return array
      */
-    protected function validationData()
+    public function validationData()
     {
         return $this->get('user') ?: [];
     }
