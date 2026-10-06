@@ -38,13 +38,19 @@ jobs:
       - name: Boot and characterize
         run: |
           php artisan migrate --force
-          php artisan serve --host=127.0.0.1 --port=3000 > boot.log 2>&1 &
+          setsid php artisan serve --host=127.0.0.1 --port=3000 > boot.log 2>&1 &
+          server=$!
+          trap 'kill -- -"$server" || true' EXIT
           python3 j4_probe.py
+      - name: Five independent seeded route faults
+        run: python3 j4_seeds.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: evidence
           path: |
+            seed-results.json
+            seed-evidence/
             composer.lock
             surface.actual.json
             project-tests.*
