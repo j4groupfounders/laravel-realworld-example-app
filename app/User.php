@@ -38,7 +38,7 @@ class User extends Authenticatable implements JWTSubject
      */
     public function setPasswordAttribute($value)
     {
-        $this->attributes['password'] = (password_get_info($value)['algo'] === 0) ? bcrypt($value) : $value;
+        $this->attributes['password'] = (password_get_info($value)['algoName'] === 'unknown') ? bcrypt($value) : $value;
     }
 
     /**
