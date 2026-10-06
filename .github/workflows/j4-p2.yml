@@ -1,0 +1,51 @@
+name: J4 P2 bounded verification
+on:
+  push:
+    branches: ['j4/p2-*']
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+          MYSQL_DATABASE: realworld_test
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.2'
+          extensions: mbstring, pdo_mysql
+          tools: composer:2.2
+          coverage: none
+      - run: composer install --no-interaction --prefer-dist --no-progress
+      - name: Test environment
+        run: |
+          cp .env.travis .env
+          php artisan key:generate
+          php artisan jwt:secret
+          php artisan migrate --force
+          php artisan route:list > routes.txt
+      - name: Project tests
+        run: vendor/bin/phpunit --log-junit project-tests.xml
+      - name: Boot and characterize
+        run: |
+          php artisan serve --host=127.0.0.1 --port=3000 > boot.log 2>&1 &
+          python3 j4_probe.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: evidence
+          path: |
+            surface.actual.json
+            project-tests.*
+            boot.log
+            routes.txt
+          retention-days: 30
